@@ -92,12 +92,12 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="balance" class="col-md-3 control-label">级别</label>
+                                                <label for="level" class="col-md-3 control-label">级别</label>
                                                 <div class="col-md-8">
                                                     <select class="form-control" name="level" id="level">
                                                         @if(!$level_list->isEmpty())
                                                             @foreach($level_list as $level)
-                                                                <option value="{{$level['level']}}" {{$user->level == $level['level'] ? 'selected' : ''}}>{{$level['level_name']}}</option>
+                                                                <option value="{{$level->level}}" {{$user->level == $level->level ? 'selected' : ''}}>{{$level->level_name}}</option>
                                                             @endforeach
                                                         @endif
                                                     </select>
@@ -150,7 +150,7 @@
                                             </div>
                                             <hr>
                                             <div class="form-group">
-                                                <label for="status" class="col-md-3 control-label">标签</label>
+                                                <label for="labels" class="col-md-3 control-label">标签</label>
                                                 <div class="col-md-8">
                                                     <select id="labels" class="form-control select2-multiple" name="labels[]" multiple>
                                                         @foreach($label_list as $label)
@@ -283,13 +283,13 @@
                                             <div class="form-group">
                                                 <label for="protocol_param" class="col-md-3 control-label">协议参数</label>
                                                 <div class="col-md-8">
-                                                    <input type="text" class="form-control" name="protocol_param" value="{{$user->protocol_param}}" id="protocol_param" placeholder="节点单端口时，请务必留空">
+                                                    <input type="text" class="form-control" name="protocol_param" value="{{$user->protocol_param}}" id="protocol_param" placeholder="节点单端口时无效">
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="obfs_param" class="col-md-3 control-label">混淆参数</label>
                                                 <div class="col-md-8">
-                                                    <textarea class="form-control" rows="5" name="obfs_param" id="obfs_param" placeholder="节点单端口时，请务必留空">{{$user->obfs_param}}</textarea>
+                                                    <textarea class="form-control" rows="5" name="obfs_param" id="obfs_param" placeholder="不填则取节点自定义混淆参数">{{$user->obfs_param}}</textarea>
                                                 </div>
                                             </div>
                                             <hr>

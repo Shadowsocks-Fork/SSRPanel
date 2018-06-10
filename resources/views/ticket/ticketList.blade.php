@@ -19,20 +19,20 @@
                         </div>
                     </div>
                     <div class="portlet-body">
-                        <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light">
                                 <thead>
                                 <tr>
-                                    <th> # </th>
-                                    <th> 账号 </th>
-                                    <th> 标题 </th>
-                                    <th> 状态 </th>
+                                    <th style="width: 10%;"> # </th>
+                                    <th style="width: 20%;"> 账号 </th>
+                                    <th style="width: 55%;"> 标题 </th>
+                                    <th style="width: 15%; text-align: center;"> 状态 </th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @if($ticketList->isEmpty())
                                     <tr>
-                                        <td colspan="4">暂无数据</td>
+                                        <td colspan="4" style="text-align: center;">暂无数据</td>
                                     </tr>
                                 @else
                                     @foreach($ticketList as $key => $ticket)
@@ -40,7 +40,7 @@
                                             <td> {{$key + 1}} </td>
                                             <td> <a href="{{url('admin/userList?username=' . $ticket->user->username)}}" target="_blank">{{$ticket->user->username}}</a> </td>
                                             <td> <a href="{{url('ticket/replyTicket?id=') . $ticket->id}}" target="_blank">{{$ticket->title}}</a> </td>
-                                            <td>
+                                            <td style="text-align: center;">
                                                 @if ($ticket->status == 0)
                                                     <span class="label label-info"> 待处理 </span>
                                                 @elseif ($ticket->status == 1)

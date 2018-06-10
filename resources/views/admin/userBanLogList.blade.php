@@ -28,8 +28,8 @@
                                 <button type="button" class="btn btn-sm grey" onclick="doReset();">重置</button>
                             </div>
                         </div>
-                        <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light">
                                 <thead>
                                 <tr>
                                     <th> # </th>
@@ -42,13 +42,13 @@
                                 <tbody>
                                     @if($list->isEmpty())
                                         <tr>
-                                            <td colspan="5">暂无数据</td>
+                                            <td colspan="5" style="text-align: center;">暂无数据</td>
                                         </tr>
                                     @else
                                         @foreach($list as $vo)
                                             <tr class="odd gradeX">
                                                 <td> {{$vo->id}} </td>
-                                                <td> {{empty($vo->user) ? '【用户已删除】' : $vo->user->username}} </td>
+                                                <td> {{empty($vo->user) ? '【账号已删除】' : $vo->user->username}} </td>
                                                 <td> {{$vo->minutes}}分钟 </td>
                                                 <td> {{$vo->desc}} </td>
                                                 <td> {{$vo->created_at}} </td>

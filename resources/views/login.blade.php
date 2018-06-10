@@ -37,6 +37,35 @@
 <!-- END LOGO -->
 <!-- BEGIN LOGIN -->
 <div class="content">
+    <nav style="padding-bottom: 20px;text-align: center;">
+        @if(app()->getLocale() == 'zh-CN')
+            <a href="{{url('lang', ['locale' => 'zh-tw'])}}">繁體中文</a>
+            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
+            <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
+            <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
+        @elseif(app()->getLocale() == 'zh-tw')
+            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">简体中文</a>
+            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
+            <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
+            <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
+        @elseif(app()->getLocale() == 'en')
+            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">简体中文</a>
+            <a href="{{url('lang', ['locale' => 'zh-tw'])}}">繁體中文</a>
+            <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
+            <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
+        @elseif(app()->getLocale() == 'ko')
+            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">简体中文</a>
+            <a href="{{url('lang', ['locale' => 'zh-tw'])}}">繁體中文</a>
+            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
+            <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
+        @elseif(app()->getLocale() == 'ja')
+            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">简体中文</a>
+            <a href="{{url('lang', ['locale' => 'zh-tw'])}}">繁體中文</a>
+            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
+            <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
+        @else
+        @endif
+    </nav>
     <!-- BEGIN LOGIN FORM -->
     <form class="login-form" action="{{url('login')}}" method="post">
         <div class="alert alert-danger display-hide">
@@ -102,83 +131,77 @@
 <script src="/assets/global/plugins/excanvas.min.js"></script>
 <script src="/assets/global/plugins/ie8.fix.min.js"></script>
 <![endif]-->
-<!-- BEGIN CORE PLUGINS -->
 <script src="/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
 <script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-<!-- END CORE PLUGINS -->
-<!-- BEGIN PAGE LEVEL PLUGINS -->
 <script src="/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
 <script src="/assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
 <script src="/assets/global/plugins/jquery-validation/js/localization/messages_zh.min.js" type="text/javascript"></script>
+<script src="/assets/global/scripts/app.min.js" type="text/javascript"></script>
+<script src="/assets/pages/scripts/login.js" type="text/javascript"></script>
 <script type="text/javascript">
     // 雪花特效
     /*
-    (function () {
-        var style = document.createElement("style");
-        style.innerText = "body .snow{position: fixed;color: #fff;line-height: 1;text-shadow: 0 0 .2em #ffffff;z-index: 2;}";
-        document.getElementsByTagName("head")[0].appendChild(style);
+     (function () {
+     var style = document.createElement("style");
+     style.innerText = "body .snow{position: fixed;color: #fff;line-height: 1;text-shadow: 0 0 .2em #ffffff;z-index: 2;}";
+     document.getElementsByTagName("head")[0].appendChild(style);
 
-        var dpr = ~~document.documentElement.getAttribute("data-dpr") || 1;
-        var wWidth = window.innerWidth;
-        var wHeight = window.innerHeight;
-        var maxNum = wWidth / 50;
-        var snowArr = [];
-        function createSnow (r) {
-            var size = Math.random() + .8;
-            var left = wWidth * Math.random();
-            var speed = (Math.random() * .5 + .6) * size * dpr;
-            var snow = document.createElement("div");
-            snow.innerText = "❅";
-            snow.className = "snow";
-            var text = "";
-            text += "font-size:";
-            text += size;
-            text += "em;left:";
-            text += left;
-            text += "px;bottom:100%;";
-            snow.style.cssText = text;
-            document.body.appendChild(snow);
-            var top = r ? wHeight * Math.random() : (-snow.offsetHeight);
-            snow.style.top = top + "px";
-            snow.style.bottom = "auto";
-            return {
-                snow: snow,
-                speed: speed,
-                top: top
-            }
-        }
-        function draw () {
-            for (var i = 0; i < maxNum; i++) {
-                if (!snowArr[i]) {
-                    if (typeof snowArr[i] == "undefined") {
-                        snowArr[i] = createSnow(true);
-                    } else {
-                        snowArr[i] = createSnow();
-                    }
-                }
-                var data = snowArr[i];
-                data.top += data.speed;
-                data.snow.style.top = data.top + "px";
-                if (data.top > wHeight) {
-                    document.body.removeChild(data.snow);
-                    snowArr[i] = null;
-                }
-            }
-            requestAnimationFrame(draw);
-        }
-        draw();
-    })();
-    */
+     var dpr = ~~document.documentElement.getAttribute("data-dpr") || 1;
+     var wWidth = window.innerWidth;
+     var wHeight = window.innerHeight;
+     var maxNum = wWidth / 50;
+     var snowArr = [];
+     function createSnow (r) {
+     var size = Math.random() + .8;
+     var left = wWidth * Math.random();
+     var speed = (Math.random() * .5 + .6) * size * dpr;
+     var snow = document.createElement("div");
+     snow.innerText = "❅";
+     snow.className = "snow";
+     var text = "";
+     text += "font-size:";
+     text += size;
+     text += "em;left:";
+     text += left;
+     text += "px;bottom:100%;";
+     snow.style.cssText = text;
+     document.body.appendChild(snow);
+     var top = r ? wHeight * Math.random() : (-snow.offsetHeight);
+     snow.style.top = top + "px";
+     snow.style.bottom = "auto";
+     return {
+     snow: snow,
+     speed: speed,
+     top: top
+     }
+     }
+     function draw () {
+     for (var i = 0; i < maxNum; i++) {
+     if (!snowArr[i]) {
+     if (typeof snowArr[i] == "undefined") {
+     snowArr[i] = createSnow(true);
+     } else {
+     snowArr[i] = createSnow();
+     }
+     }
+     var data = snowArr[i];
+     data.top += data.speed;
+     data.snow.style.top = data.top + "px";
+     if (data.top > wHeight) {
+     document.body.removeChild(data.snow);
+     snowArr[i] = null;
+     }
+     }
+     requestAnimationFrame(draw);
+     }
+     draw();
+     })();
+     */
 </script>
-<!-- END PAGE LEVEL PLUGINS -->
-<!-- BEGIN THEME GLOBAL SCRIPTS -->
-<script src="/assets/global/scripts/app.min.js" type="text/javascript"></script>
-<!-- END THEME GLOBAL SCRIPTS -->
-<!-- BEGIN PAGE LEVEL SCRIPTS -->
-<script src="/assets/pages/scripts/login.js" type="text/javascript"></script>
-<!-- END PAGE LEVEL SCRIPTS -->
-<!-- BEGIN THEME LAYOUT SCRIPTS -->
-<!-- END THEME LAYOUT SCRIPTS -->
+<!-- 统计 -->
+{!! $website_analytics !!}
+<!-- 客服 -->
+{!! $website_customer_service !!}
 </body>
 
 </html>

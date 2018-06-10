@@ -31,13 +31,13 @@
                                 <button type="button" class="btn btn-sm grey" onclick="doReset();">重置</button>
                             </div>
                         </div>
-                        <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light">
                                 <thead>
                                 <tr>
                                     <th> # </th>
                                     <th> 用户 </th>
-                                    <th> 唯一识别码 </th>
+                                    <th> 识别码 </th>
                                     <th> 请求次数 </th>
                                     <th> 最后请求时间 </th>
                                     <th> 封禁时间 </th>
@@ -48,13 +48,13 @@
                                 <tbody>
                                     @if($subscribeList->isEmpty())
                                         <tr>
-                                            <td colspan="8">暂无数据</td>
+                                            <td colspan="8" style="text-align: center;">暂无数据</td>
                                         </tr>
                                     @else
                                         @foreach($subscribeList as $subscribe)
                                             <tr class="odd gradeX">
                                                 <td> {{$subscribe->id}} </td>
-                                                <td> {{$subscribe->user->username}} </td>
+                                                <td> {{empty($subscribe->user) ? '【账号已删除】' : $subscribe->user->username}} </td>
                                                 <td> {{$subscribe->code}} </td>
                                                 <td> {{$subscribe->times}} </td>
                                                 <td> {{$subscribe->updated_at}} </td>

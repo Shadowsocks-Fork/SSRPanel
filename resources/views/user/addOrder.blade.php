@@ -23,7 +23,9 @@
                         <tr>
                             <td style="padding: 10px;">
                                 <h2>{{$goods->name}}</h2>
-                                <p> {{trans('home.service_traffic')}} {{$goods->traffic}}（{{trans('home.service_days')}} {{$goods->days}} {{trans('home.day')}}） </p>
+                                {{trans('home.service_traffic')}} {{$goods->traffic}}
+                                <br/>
+                                {{trans('home.service_days')}} {{$goods->days}} {{trans('home.day')}}
                             </td>
                             <td class="text-center"> ￥{{$goods->price}} </td>
                             <td class="text-center"> x 1 </td>
@@ -38,27 +40,27 @@
                     <p class="invoice-desc"> ￥{{$goods->price}} </p>
                 </div>
                 <div class="col-xs-3">
-                    <h2 class="invoice-title"> {{trans('home.coupon')}} </h2>
-                    <p class="invoice-desc">
-                        <div class="input-group">
-                            <input class="form-control" type="text" name="coupon_sn" id="coupon_sn" placeholder="{{trans('home.coupon')}}" />
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button" onclick="redeemCoupon()"><i class="fa fa-refresh"></i> {{trans('home.redeem_coupon')}} </button>
-                            </span>
-                        </div>
-                    </p>
-                </div>
-                <div class="col-xs-6">
                     <h2 class="invoice-title"> {{trans('home.service_total_price')}} </h2>
                     <p class="invoice-desc grand-total"> ￥{{$goods->price}} </p>
+                </div>
+                <div class="col-xs-6">
+                    <h2 class="invoice-title"> {{trans('home.coupon')}} </h2>
+                    <p class="invoice-desc">
+                    <div class="input-group">
+                        <input class="form-control" type="text" name="coupon_sn" id="coupon_sn" placeholder="{{trans('home.coupon')}}" />
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" onclick="redeemCoupon()"><i class="fa fa-refresh"></i> {{trans('home.redeem_coupon')}} </button>
+                        </span>
+                    </div>
+                    </p>
                 </div>
             </div>
             <div class="row">
                 <div class="col-xs-12" style="text-align: right;">
-                    @if($paypal_status)
-                        <a class="btn btn red hidden-print" onclick="paypalPay()"> PayPal支付 </a>
+                    @if($is_youzan)
+                        <a class="btn btn-lg red hidden-print" onclick="onlinePay()"> {{trans('home.online_pay')}} </a>
                     @endif
-                    <a class="btn btn blue hidden-print uppercase" onclick="pay()"> {{trans('home.service_pay_button')}} </a>
+                    <a class="btn btn-lg blue hidden-print uppercase" onclick="pay()"> {{trans('home.service_pay_button')}} </a>
                 </div>
             </div>
         </div>
@@ -81,8 +83,14 @@
                 async: false,
                 data: {_token:'{{csrf_token()}}', coupon_sn:coupon_sn},
                 dataType: 'json',
+                beforeSend: function () {
+                    index = layer.load(1, {
+                        shade: [0.7,'#CCC']
+                    });
+                },
                 success: function (ret) {
                     console.log(ret);
+                    layer.close(index);
                     $("#coupon_sn").parent().removeClass("has-error");
                     $("#coupon_sn").parent().removeClass("has-success");
                     $(".input-group-addon").remove();
@@ -93,7 +101,7 @@
                         // 根据类型计算折扣后的总金额
                         var total_price = 0;
                         if (ret.data.type == '2') {
-                            total_price = goods_price * ret.data.discount;
+                            total_price = goods_price * ret.data.discount / 10;
                         } else {
                             total_price = goods_price - ret.data.amount;
                             total_price = total_price > 0 ? total_price : 0;
@@ -109,11 +117,39 @@
             });
         }
 
-        // PayPal在线支付
-        function paypalPay() {
+        // 在线支付
+        function onlinePay() {
             var goods_id = '{{$goods->id}}';
             var coupon_sn = $('#coupon_sn').val();
-            window.location.href="{{url('payment/create?goods_id=')}}" + goods_id + '&coupon_sn=' + coupon_sn;
+
+            index = layer.load(1, {
+                shade: [0.7,'#CCC']
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "{{url('payment/create')}}",
+                async: false,
+                data: {_token:'{{csrf_token()}}', goods_id:goods_id, coupon_sn:coupon_sn},
+                dataType: 'json',
+                beforeSend: function () {
+                    index = layer.load(1, {
+                        shade: [0.7,'#CCC']
+                    });
+                },
+                success: function (ret) {
+                    layer.msg(ret.message, {time:1300}, function() {
+                        if (ret.status == 'success') {
+                            window.location.href = '{{url('payment')}}' + "/" + ret.data;
+                        } else {
+                            layer.close(index);
+                        }
+                    });
+                }
+                //complete: function () {
+                    //
+                //}
+            });
         }
 
         // 余额支付
@@ -121,16 +157,27 @@
             var goods_id = '{{$goods->id}}';
             var coupon_sn = $('#coupon_sn').val();
 
+            index = layer.load(1, {
+                shade: [0.7,'#CCC']
+            });
+
             $.ajax({
                 type: "POST",
                 url: "{{url('user/addOrder')}}",
                 async: false,
                 data: {_token:'{{csrf_token()}}', goods_id:goods_id, coupon_sn:coupon_sn},
                 dataType: 'json',
+                beforeSend: function () {
+                    index = layer.load(1, {
+                        shade: [0.7,'#CCC']
+                    });
+                },
                 success: function (ret) {
                     layer.msg(ret.message, {time:1300}, function() {
                         if (ret.status == 'success') {
                             window.location.href = '{{url('user/orderList')}}';
+                        } else {
+                            layer.close(index);
                         }
                     });
                 }

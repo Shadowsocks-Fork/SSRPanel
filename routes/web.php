@@ -1,9 +1,9 @@
 <?php
 
 Route::get('s/{code}', 'SubscribeController@index'); // 节点订阅地址
-Route::post('locate', 'LocateController@locate'); // 上报文章打开时的定位
 
 Route::group(['middleware' => ['forbidden']], function () {
+    Route::get('lang/{locale}', 'UserController@switchLang'); // 语言切换
     Route::any('login', 'LoginController@index'); // 登录
     Route::get('logout', 'LoginController@logout'); // 退出
     Route::any('register', 'RegisterController@index'); // 注册
@@ -40,6 +40,7 @@ Route::group(['middleware' => ['forbidden', 'user', 'admin']], function () {
     Route::post('admin/delLabel', 'AdminController@delLabel'); // 删除标签
     Route::get('ticket/ticketList', 'TicketController@ticketList'); // 工单列表
     Route::any('ticket/replyTicket', 'TicketController@replyTicket'); // 回复工单
+    Route::get('admin/orderList', 'AdminController@orderList'); // 订单列表
     Route::post('ticket/closeTicket', 'TicketController@closeTicket'); // 关闭工单
     Route::get('admin/inviteList', 'AdminController@inviteList'); // 邀请码列表
     Route::post('admin/makeInvite', 'AdminController@makeInvite'); // 生成邀请码
@@ -48,6 +49,7 @@ Route::group(['middleware' => ['forbidden', 'user', 'admin']], function () {
     Route::get('admin/applyDetail', 'AdminController@applyDetail'); // 提现申请管理
     Route::post('admin/setApplyStatus', 'AdminController@setApplyStatus'); // 设置提现申请状态
     Route::any('admin/config', 'AdminController@config'); // 配置列表
+    Route::post('admin/setExtend', 'AdminController@setExtend'); // 设置客服、统计代码
     Route::any('admin/addConfig', 'AdminController@addConfig'); // 添加配置
     Route::post('admin/delConfig', 'AdminController@delConfig'); // 删除配置
     Route::post('admin/addLevel', 'AdminController@addLevel'); // 增加等级
@@ -72,7 +74,6 @@ Route::group(['middleware' => ['forbidden', 'user', 'admin']], function () {
     Route::post('admin/setQrcode', 'AdminController@setQrcode'); // 设置充值二维码
     Route::post('admin/resetUserTraffic', 'AdminController@resetUserTraffic'); // 重置用户流量
     Route::post('admin/handleUserBalance', 'AdminController@handleUserBalance'); // 余额充值
-    Route::get('admin/userOrderList', 'AdminController@userOrderList'); // 用户消费记录
     Route::get('admin/userBalanceLogList', 'AdminController@userBalanceLogList'); // 余额变动日志
     Route::get('admin/userBanLogList', 'AdminController@userBanLogList'); // 用户封禁记录
     Route::get('admin/makePort', 'AdminController@makePort'); // 生成端口
@@ -89,6 +90,7 @@ Route::group(['middleware' => ['forbidden', 'user', 'admin']], function () {
     Route::get('emailLog/logList', 'EmailLogController@logList'); // 邮件发送日志
     Route::post("admin/switchToUser", "AdminController@switchToUser"); // 转换成某个用户的身份
     Route::any("admin/decompile", "AdminController@decompile"); // SS(R)链接反解析
+    Route::any("payment/callbackList", "PaymentController@callbackList"); // 有赞云支付回调日志
 });
 
 Route::group(['middleware' => ['forbidden', 'user']], function () {
@@ -114,10 +116,9 @@ Route::group(['middleware' => ['forbidden', 'user']], function () {
     Route::post('user/extractMoney', 'UserController@extractMoney'); // 申请提现
     Route::post("user/switchToAdmin", "UserController@switchToAdmin"); // 转换成管理员的身份
     Route::post("user/charge", "UserController@charge"); // 卡券余额充值
-});
 
-//Route::group(['middleware' => ['user']], function() {
-Route::any('payment/create', 'PaymentController@create'); // 创建支付
-Route::any('payment/execute', 'PaymentController@execute'); // 用户确认执行支付
-Route::any('payment/cancel', 'PaymentController@cancel'); // 用户取消支付
-//});
+    Route::post('payment/create', 'PaymentController@create'); // 创建支付
+    Route::get('payment/getStatus', 'PaymentController@getStatus'); // 获取支付单状态
+    Route::get('payment/{sn}', 'PaymentController@detail'); // 支付单详情
+
+});

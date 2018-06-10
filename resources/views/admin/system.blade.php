@@ -4,7 +4,10 @@
     <link href="/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
     <link href="/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
 @endsection
+
 @section('title', '控制面板')
 @section('content')
     <!-- BEGIN CONTENT BODY -->
@@ -37,13 +40,11 @@
                                         <li>
                                             <a href="#tab_6" data-toggle="tab"> 自动化任务 </a>
                                         </li>
-                                        <!--
                                         <li>
-                                            <a href="#tab_7" data-toggle="tab"> 充值二维码设置 </a>
+                                            <a href="#tab_7" data-toggle="tab"> 有赞云设置 </a>
                                         </li>
-                                        -->
                                         <li>
-                                            <a href="#tab_8" data-toggle="tab"> PayPal接口设置 </a>
+                                            <a href="#tab_8" data-toggle="tab"> 客服、统计设置 </a>
                                         </li>
                                     </ul>
                                 </div>
@@ -74,7 +75,7 @@
                                                                     <button class="btn btn-success" type="button" onclick="setWebsiteUrl()">修改</button>
                                                                 </span>
                                                                 </div>
-                                                                <span class="help-block"> 生成重置密码必备，示例：https://github.com </span>
+                                                                <span class="help-block"> 生成重置密码必备，示例：https://www.ssrpanel.com </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -246,7 +247,7 @@
                                                                         <button class="btn btn-success" type="button" onclick="setSubscribeDomain()">修改</button>
                                                                     </span>
                                                                 </div>
-                                                                <span class="help-block"> （推荐）防止网站域名被投毒后用户无法正常订阅，需带http://或https:// </span>
+                                                                <span class="help-block"> （推荐）防止面板域名被投毒后无法正常订阅，需带http://或https:// </span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -260,6 +261,63 @@
                                                                 </div>
                                                                 <span class="help-block"> 客户端订阅时随机取得几个节点 </span>
                                                             </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                            <label for="initial_labels_for_user" class="col-md-3 control-label">用户初始标签</label>
+                                                            <div class="col-md-9">
+                                                                <select id="initial_labels_for_user" class="form-control select2-multiple" name="initial_labels_for_user" multiple="multiple">
+                                                                    @foreach($label_list as $label)
+                                                                        <option value="{{$label->id}}"
+                                                                            @if (in_array($label->id, explode(',', $initial_labels_for_user)))
+                                                                            selected
+                                                                            @endif
+                                                                        >{{$label->name}}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                                <span class="help-block"> 注册用户时的初始标签 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="register_ip_limit" class="col-md-3 control-label">同IP注册限制</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="register_ip_limit" value="{{$register_ip_limit}}" id="register_ip_limit" />
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success" type="button" onclick="setRegisterIpLimit()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                                <span class="help-block"> 同IP在24小时内允许注册数量，为0时不限制 </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                            <label for="goods_purchase_limit_strategy" class="col-md-3 control-label">商品限购</label>
+                                                            <div class="col-md-9">
+                                                                <select id="goods_purchase_limit_strategy" class="form-control select2" name="goods_purchase_limit_strategy">
+                                                                    <option value="none"
+                                                                        @if ($goods_purchase_limit_strategy == 'none')
+                                                                        selected
+                                                                        @endif
+                                                                    >不限制</option>
+                                                                    <option value="free"
+                                                                        @if ($goods_purchase_limit_strategy == 'free')
+                                                                        selected
+                                                                        @endif
+                                                                    >仅限免费商品</option>
+                                                                    <option value="all"
+                                                                        @if ($goods_purchase_limit_strategy == 'all')
+                                                                        selected
+                                                                        @endif
+                                                                    >限全部商品</option>
+                                                                </select>
+                                                                <span class="help-block"> 是否限制用户重复购买商品，限制后用户不可重复购买已购买的、尚在有效期的商品 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            &nbsp;
                                                         </div>
                                                     </div>
                                                 </div>
@@ -418,7 +476,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label for="crash_warning_email" class="col-md-3 control-label">宕机收信地址</label>
+                                                            <label for="crash_warning_email" class="col-md-3 control-label">管理员收信地址</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
                                                                     <input class="form-control" type="text" name="crash_warning_email" value="{{$crash_warning_email}}" id="crash_warning_email" placeholder="master@ssrpanel.com" />
@@ -426,7 +484,7 @@
                                                                         <button class="btn btn-success" type="button" onclick="setCrashWarningEmail()">修改</button>
                                                                     </span>
                                                                 </div>
-                                                                <span class="help-block"> 启用节点宕机提醒后如果不填写此值，则不发信 </span>
+                                                                <span class="help-block"> 填写此值则节点宕机、工单回复会自动提醒 </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -531,10 +589,10 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label for="auto_release_port" class="col-md-3 control-label">端口释放</label>
+                                                            <label for="auto_release_port" class="col-md-3 control-label">端口自动释放</label>
                                                             <div class="col-md-9">
                                                                 <input type="checkbox" class="make-switch" @if($auto_release_port) checked @endif id="auto_release_port" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> （推荐）被禁用的用户端口自动释放，重新启用则需要手动分配端口 </span>
+                                                                <span class="help-block"> 被禁用的用户端口自动释放，重新启用用户则需要手动分配端口并手动重启一次SSR(R) </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -542,42 +600,81 @@
                                                 </div>
                                             </form>
                                         </div>
-                                        <div class="tab-pane" id="tab_8">
+                                        <div class="tab-pane" id="tab_7">
                                             <form action="#" method="post" class="form-horizontal">
                                                 <div class="portlet-body">
                                                     <div class="form-group">
-                                                        <div class="col-md-6">
-                                                            <label for="paypal_status" class="col-md-3 control-label">本功能</label>
-                                                            <div class="col-md-9">
-                                                                <input type="checkbox" class="make-switch" @if($paypal_status) checked @endif id="paypal_status" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
-                                                                <span class="help-block"> 启用前请先去PayPal申请ClientID和ClientSecret </span>
+                                                        <div class="col-md-12">
+                                                            <div class="alert alert-info" style="text-align: center;">
+                                                                请在<a href="https://console.youzanyun.com/login" target="_blank">有赞云</a>后台设置应用的推送网址为：{{$website_url . '/api/yzy'}}
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6"></div>
                                                     </div>
                                                     <div class="form-group">
                                                         <div class="col-md-6">
-                                                            <label for="paypal_client_id" class="col-md-3 control-label">ClientID</label>
+                                                            <label for="is_youzan" class="col-md-3 control-label">本功能</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_youzan) checked @endif id="is_youzan" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 请先到<a href="https://console.youzanyun.com/dashboard">有赞云</a>申请client_id和client_secret并绑定店铺 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="kdt_id" class="col-md-3 control-label">kdt_id</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
-                                                                    <input class="form-control" type="text" name="paypal_client_id" value="{{$paypal_client_id}}" id="paypal_client_id" />
+                                                                    <input class="form-control" type="text" name="kdt_id" value="{{$kdt_id}}" id="kdt_id" />
                                                                     <span class="input-group-btn">
-                                                                        <button class="btn btn-success" type="button" onclick="setPaypalClientID()">修改</button>
+                                                                        <button class="btn btn-success" type="button" onclick="setKdtId()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                                <span class="help-block"> 即：授权店铺id </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                            <label for="youzan_client_id" class="col-md-3 control-label">client_id</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="youzan_client_id" value="{{$youzan_client_id}}" id="youzan_client_id" />
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success" type="button" onclick="setYouzanClientId()">修改</button>
                                                                     </span>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label for="paypal_client_secret" class="col-md-3 control-label">ClientSecret</label>
+                                                            <label for="youzan_client_secret" class="col-md-3 control-label">client_secret</label>
                                                             <div class="col-md-9">
                                                                 <div class="input-group">
-                                                                    <input class="form-control" type="text" name="paypal_client_secret" value="{{$paypal_client_secret}}" id="paypal_client_secret" />
+                                                                    <input class="form-control" type="text" name="youzan_client_secret" value="{{$youzan_client_secret}}" id="youzan_client_secret" />
                                                                     <span class="input-group-btn">
-                                                                    <button class="btn btn-success" type="button" onclick="setPaypalClientSecret()">修改</button>
+                                                                    <button class="btn btn-success" type="button" onclick="setYouzanClientSecret()">修改</button>
                                                                 </span>
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="tab-pane" id="tab_8">
+                                            <form action="{{url('admin/setExtend')}}" method="post" class="form-horizontal" role="form" onsubmit="return submitExtend();">
+                                                <div class="form-group">
+                                                    <label for="website_analytics" class="col-md-2 control-label">统计代码</label>
+                                                    <div class="col-md-8">
+                                                        <textarea class="form-control" rows="10" name="website_analytics" id="website_analytics">{{$website_analytics}}</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="website_customer_service" class="col-md-2 control-label">客服代码</label>
+                                                    <div class="col-md-8">
+                                                        <textarea class="form-control" rows="10" name="website_customer_service" id="website_customer_service">{{$website_customer_service}}</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-md-offset-2 col-md-10">
+                                                        <button type="submit" class="btn blue">提交</button>
                                                     </div>
                                                 </div>
                                             </form>
@@ -598,9 +695,46 @@
 @section('script')
     <script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
+        // 设置客服、统计代码
+        function submitExtend() {
+            var website_analytics = $('#website_analytics').val();
+            var website_customer_service = $('#website_customer_service').val();
+
+            $.ajax({
+                type: "POST",
+                url: "{{url('admin/setExtend')}}",
+                async: false,
+                data: {_token:'{{csrf_token()}}', website_analytics:website_analytics, website_customer_service:website_customer_service},
+                dataType: 'json',
+                success: function (ret) {
+                    layer.msg(ret.message, {time:1000});
+                }
+            });
+
+            return false;
+        }
+
+        $('#initial_labels_for_user').select2({
+            placeholder: '设置后则可见相同标签的节点',
+            allowClear: true,
+            width:'100%'
+        }).change(function () {
+            var initial_labels_for_user = $(this).val() ? $(this).val().join(',') : '';
+
+            console.log(initial_labels_for_user);
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'initial_labels_for_user', value:initial_labels_for_user}, function (ret) {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
+                        window.location.reload();
+                    }
+                });
+            });
+        });
+	
         // 启用、禁用随机端口
         $('#is_rand_port').on({
             'switchChange.bootstrapSwitch': function(event, state) {
@@ -901,12 +1035,12 @@
             }
         });
 
-        // 启用、禁用PayPal支付接口
-        $('#paypal_status').on({
+        // 启用、禁用有赞云
+        $('#is_youzan').on({
             'switchChange.bootstrapSwitch': function(event, state) {
-                var paypal_status = state ? 1 : 0;
+                var is_youzan = state ? 1 : 0;
 
-                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'paypal_status', value:paypal_status}, function (ret) {
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_youzan', value:is_youzan}, function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
                         if (ret.status == 'fail') {
                             window.location.reload();
@@ -920,6 +1054,11 @@
         function setTrafficBanValue() {
             var traffic_ban_value = $("#traffic_ban_value").val();
 
+            if (traffic_ban_value < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
+
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'traffic_ban_value', value:traffic_ban_value}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
                     if (ret.status == 'fail') {
@@ -932,6 +1071,11 @@
         // 设置用户封号时长
         function setTrafficBanTime() {
             var traffic_ban_time = $("#traffic_ban_time").val();
+
+            if (traffic_ban_time < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'traffic_ban_time', value:traffic_ban_time}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
@@ -972,6 +1116,11 @@
         function setSubscribeBanTimes() {
             var subscribe_ban_times = $("#subscribe_ban_times").val();
 
+            if (subscribe_ban_times < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
+
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'subscribe_ban_times', value:subscribe_ban_times}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
                     if (ret.status == 'fail') {
@@ -981,11 +1130,11 @@
             });
         }
 
-        // 设置PayPal的ClientID
-        function setPaypalClientID() {
-            var paypal_client_id = $("#paypal_client_id").val();
+        // 设置有赞云的kdt_id
+        function setKdtId() {
+            var kdt_id = $("#kdt_id").val();
 
-            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'paypal_client_id', value:paypal_client_id}, function (ret) {
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'kdt_id', value:kdt_id}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
                     if (ret.status == 'fail') {
                         window.location.reload();
@@ -994,11 +1143,24 @@
             });
         }
 
-        // 设置PayPal的ClientSecret
-        function setPaypalClientSecret() {
-            var paypal_client_secret = $("#paypal_client_secret").val();
+        // 设置有赞云的client_id
+        function setYouzanClientId() {
+            var youzan_client_id = $("#youzan_client_id").val();
 
-            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'paypal_client_secret', value:paypal_client_secret}, function (ret) {
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'youzan_client_id', value:youzan_client_id}, function (ret) {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
+                        window.location.reload();
+                    }
+                });
+            });
+        }
+
+        // 设置有赞云的client_secret
+        function setYouzanClientSecret() {
+            var youzan_client_secret = $("#youzan_client_secret").val();
+
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'youzan_client_secret', value:youzan_client_secret}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
                     if (ret.status == 'fail') {
                         window.location.reload();
@@ -1098,9 +1260,25 @@
             });
         });
 
+        $("#goods_purchase_limit_strategy").change(function() {
+            var strategy = $(this).val();
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'goods_purchase_limit_strategy', value: strategy}, function (ret) {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
+                        window.location.reload();
+                    }
+                });
+            }); 
+        });
+
         // 设置注册时默认有效期
         function setDefaultDays() {
-            var default_days = $("#default_days").val();
+            var default_days = parseInt($("#default_days").val());
+
+            if (default_days < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'default_days', value:default_days}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
@@ -1113,7 +1291,12 @@
 
         // 设置注册时默认流量
         function setDefaultTraffic() {
-            var default_traffic = $("#default_traffic").val();
+            var default_traffic = parseInt($("#default_traffic").val());
+
+            if (default_traffic < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'default_traffic', value:default_traffic}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
@@ -1126,7 +1309,12 @@
 
         // 设置可生成邀请码数量
         function setInviteNum() {
-            var invite_num = $("#invite_num").val();
+            var invite_num = parseInt($("#invite_num").val());
+
+            if (invite_num < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'invite_num', value:invite_num}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
@@ -1141,6 +1329,11 @@
         function setResetPasswordTimes() {
             var reset_password_times = $("#reset_password_times").val();
 
+            if (reset_password_times < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
+
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'reset_password_times', value:reset_password_times}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
                     if (ret.status == 'fail') {
@@ -1152,7 +1345,12 @@
 
         // 设置激活用户次数
         function setActiveTimes() {
-            var active_times = $("#active_times").val();
+            var active_times = parseInt($("#active_times").val());
+
+            if (active_times < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'active_times', value:active_times}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
@@ -1163,7 +1361,7 @@
             });
         }
 
-        // 设置激活用户次数
+        // 设置节点订阅地址
         function setSubscribeDomain() {
             var subscribe_domain = $("#subscribe_domain").val();
 
@@ -1177,8 +1375,31 @@
         }
 
         // 设置节点订阅随机展示节点数
+        function setRegisterIpLimit() {
+            var register_ip_limit = parseInt($("#register_ip_limit").val());
+
+            if (register_ip_limit < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
+
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'register_ip_limit', value:register_ip_limit}, function (ret) {
+                layer.msg(ret.message, {time:1000}, function() {
+                    if (ret.status == 'fail') {
+                        window.location.reload();
+                    }
+                });
+            });
+        }
+
+        // 设置节点订阅随机展示节点数
         function setSubscribeMax() {
-            var subscribe_max = $("#subscribe_max").val();
+            var subscribe_max = parseInt($("#subscribe_max").val());
+
+            if (subscribe_max < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'subscribe_max', value:subscribe_max}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
@@ -1193,6 +1414,11 @@
         function setTrafficWarningPercent() {
             var traffic_warning_percent = $("#traffic_warning_percent").val();
 
+            if (traffic_warning_percent < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
+
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'traffic_warning_percent', value:traffic_warning_percent}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
                     if (ret.status == 'fail') {
@@ -1204,7 +1430,12 @@
 
         // 设置用户过期提醒阈值
         function setExpireDays() {
-            var expire_days = $("#expire_days").val();
+            var expire_days = parseInt($("#expire_days").val());
+
+            if (expire_days < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'expire_days', value:expire_days}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
@@ -1243,7 +1474,12 @@
 
         // 登录加积分的时间间隔
         function setLoginAddScoreRange() {
-            var login_add_score_range = $("#login_add_score_range").val();
+            var login_add_score_range = parseInt($("#login_add_score_range").val());
+
+            if (login_add_score_range < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'login_add_score_range', value:login_add_score_range}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
@@ -1256,7 +1492,12 @@
 
         // 设置根据推广链接注册送流量
         function setReferralTraffic() {
-            var referral_traffic = $("#referral_traffic").val();
+            var referral_traffic = parseInt($("#referral_traffic").val());
+
+            if (referral_traffic < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'referral_traffic', value:referral_traffic}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
@@ -1271,6 +1512,11 @@
         function setReferralPercent() {
             var referral_percent = $("#referral_percent").val();
 
+            if (referral_percent < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
+
             $.post("{{url('admin/setReferralPercent')}}", {_token:'{{csrf_token()}}', value:referral_percent}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {
                     if (ret.status == 'fail') {
@@ -1283,6 +1529,11 @@
         // 设置返利满多少元才可以提现
         function setReferralMoney() {
             var referral_money = $("#referral_money").val();
+
+            if (referral_money < 0) {
+                layer.msg('不能小于0', {time:1000});
+                return ;
+            }
 
             $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'referral_money', value:referral_money}, function (ret) {
                 layer.msg(ret.message, {time:1000}, function() {

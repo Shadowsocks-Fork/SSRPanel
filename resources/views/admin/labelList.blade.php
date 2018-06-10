@@ -16,6 +16,7 @@
                     <div class="portlet-title">
                         <div class="caption font-dark">
                             <span class="caption-subject bold uppercase"> 标签列表 </span>
+                            <small>标签影响用户查看/订阅节点信息（用户和节点通过标签进行关联）</small>
                         </div>
                         <div class="actions">
                             <div class="btn-group">
@@ -24,8 +25,8 @@
                         </div>
                     </div>
                     <div class="portlet-body">
-                        <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light">
                                 <thead>
                                 <tr>
                                     <th> # </th>
@@ -33,13 +34,13 @@
                                     <th> 关联用户数 </th>
                                     <th> 关联节点数 </th>
                                     <th> 排序 </th>
-                                    <th> 操作 </th>
+                                    <th style="text-align: center;"> 操作 </th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @if($labelList->isEmpty())
                                     <tr>
-                                        <td colspan="6">暂无数据</td>
+                                        <td colspan="6" style="text-align: center;">暂无数据</td>
                                     </tr>
                                 @else
                                     @foreach($labelList as $label)
@@ -49,7 +50,7 @@
                                             <td> {{$label->userCount}} </td>
                                             <td> {{$label->nodeCount}} </td>
                                             <td> {{$label->sort}} </td>
-                                            <td>
+                                            <td style="text-align: center;">
                                                 <button type="button" class="btn btn-sm blue btn-outline" onclick="editLabel('{{$label->id}}')">
                                                     <i class="fa fa-pencil"></i>
                                                 </button>

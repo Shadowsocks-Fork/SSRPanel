@@ -42,8 +42,8 @@
                                             <th> # </th>
                                             <th> {{trans('home.invite_code_table_name')}} </th>
                                             <th> {{trans('home.invite_code_table_date')}} </th>
-                                            <th> {{trans('home.invite_code_table_user')}} </th>
                                             <th> {{trans('home.invite_code_table_status')}} </th>
+                                            <th> {{trans('home.invite_code_table_user')}} </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -57,7 +57,6 @@
                                                     <td> {{$key + 1}} </td>
                                                     <td> <a href="{{url('register?aff='.Session::get('user')['id'].'&code='.$invite->code)}}" target="_blank">{{$invite->code}}</a> </td>
                                                     <td> {{$invite->dateline}} </td>
-                                                    <td> {{empty($invite->user) ? '' : $invite->user->username}} </td>
                                                     <td>
                                                         @if($invite->status == '0')
                                                             <span class="label label-sm label-success"> {{trans('home.invite_code_table_status_un')}} </span>
@@ -67,6 +66,7 @@
                                                             <span class="label label-sm label-default"> {{trans('home.invite_code_table_status_expire')}} </span>
                                                         @endif
                                                     </td>
+                                                    <td> {{empty($invite->user) ? '' : $invite->user->username}} </td>
                                                 </tr>
                                             @endforeach
                                         @endif
@@ -75,7 +75,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-4 col-sm-4">
-                                    <div class="dataTables_info" role="status" aria-live="polite">共 {{$inviteList->total()}} 个邀请码</div>
+                                    <div class="dataTables_info" role="status" aria-live="polite">{{trans('home.invite_code_summary', ['total' => $inviteList->total()])}}</div>
                                 </div>
                                 <div class="col-md-8 col-sm-8">
                                     <div class="dataTables_paginate paging_bootstrap_full_number pull-right">

@@ -66,15 +66,15 @@
                         <ul class="dropdown-menu dropdown-menu-default">
                             @if(Session::get('user')['is_admin'])
                                 <li>
-                                    <a href="{{url('admin')}}"> <i class="icon-settings"></i> 管理中心 </a>
+                                    <a href="{{url('admin')}}"> <i class="icon-settings"></i>{{trans('home.console')}}</a>
                                 </li>
                             @endif
                             <li>
-                                <a href="{{url('user/profile')}}"> <i class="icon-user"></i> 个人资料 </a>
+                                <a href="{{url('user/profile')}}"> <i class="icon-user"></i>{{trans('home.profile')}}</a>
                             </li>
                             <li class="divider"> </li>
                             <li>
-                                <a href="{{url('logout')}}"> <i class="icon-key"></i> 退出 </a>
+                                <a href="{{url('logout')}}"> <i class="icon-key"></i>{{trans('home.logout')}}</a>
                             </li>
                         </ul>
                     </li>
@@ -107,29 +107,17 @@
             <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
             <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
             <ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
-                <li class="nav-item start {{in_array(Request::path(), ['/', 'user', 'user/subscribe']) ? 'active open' : ''}}">
+                <li class="nav-item start {{in_array(Request::path(), ['/', 'user', 'user/subscribe', 'user/profile', 'user/article']) ? 'active open' : ''}}">
                     <a href="{{url('user')}}" class="nav-link nav-toggle">
                         <i class="icon-home"></i>
                         <span class="title">{{trans('home.home')}}</span>
                         <span class="selected"></span>
                     </a>
                 </li>
-                <li class="nav-item {{in_array(Request::path(), ['user/goodsList', 'user/addOrder']) ? 'active open' : ''}}">
+                <li class="nav-item {{in_array(Request::path(), ['user/goodsList', 'user/addOrder']) || Request::segment(1) == 'payment' ? 'active open' : ''}}">
                     <a href="{{url('user/goodsList')}}" class="nav-link nav-toggle">
                         <i class="icon-basket"></i>
                         <span class="title">{{trans('home.services')}}</span>
-                    </a>
-                </li>
-                <li class="nav-item {{in_array(Request::path(), ['user/trafficLog']) ? 'active open' : ''}}">
-                    <a href="{{url('user/trafficLog')}}" class="nav-link nav-toggle">
-                        <i class="icon-speedometer"></i>
-                        <span class="title">{{trans('home.traffic_log')}}</span>
-                    </a>
-                </li>
-                <li class="nav-item {{in_array(Request::path(), ['user/invite']) ? 'active open' : ''}}">
-                    <a href="{{url('user/invite')}}" class="nav-link nav-toggle">
-                        <i class="icon-user-follow"></i>
-                        <span class="title">{{trans('home.invite_code')}}</span>
                     </a>
                 </li>
                 <li class="nav-item {{in_array(Request::path(), ['user/orderList']) ? 'active open' : ''}}">
@@ -142,6 +130,18 @@
                     <a href="{{url('user/ticketList')}}" class="nav-link nav-toggle">
                         <i class="icon-question"></i>
                         <span class="title">{{trans('home.tickets')}}</span>
+                    </a>
+                </li>
+                <li class="nav-item {{in_array(Request::path(), ['user/invite']) ? 'active open' : ''}}">
+                    <a href="{{url('user/invite')}}" class="nav-link nav-toggle">
+                        <i class="icon-user-follow"></i>
+                        <span class="title">{{trans('home.invite_code')}}</span>
+                    </a>
+                </li>
+                <li class="nav-item {{in_array(Request::path(), ['user/trafficLog']) ? 'active open' : ''}}">
+                    <a href="{{url('user/trafficLog')}}" class="nav-link nav-toggle">
+                        <i class="icon-speedometer"></i>
+                        <span class="title">{{trans('home.traffic_log')}}</span>
                     </a>
                 </li>
                 @if(Session::get('referral_status'))
@@ -229,6 +229,10 @@
 <!-- BEGIN THEME LAYOUT SCRIPTS -->
 <script src="/assets/layouts/layout4/scripts/layout.min.js" type="text/javascript"></script>
 <!-- END THEME LAYOUT SCRIPTS -->
+<!-- 统计 -->
+{!! $website_analytics !!}
+<!-- 客服 -->
+{!! $website_customer_service !!}
 </body>
 
 </html>

@@ -69,8 +69,8 @@
                                 <button type="button" class="btn btn-sm grey" onclick="doReset();">重置</button>
                             </div>
                         </div>
-                        <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light">
                                 <thead>
                                 <tr>
                                     <th> # </th>
@@ -88,7 +88,7 @@
                                 <tbody>
                                     @if ($userList->isEmpty())
                                         <tr>
-                                            <td colspan="10">暂无数据</td>
+                                            <td colspan="10" style="text-align: center;">暂无数据</td>
                                         </tr>
                                     @else
                                         @foreach ($userList as $user)

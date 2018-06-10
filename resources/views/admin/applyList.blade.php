@@ -34,8 +34,8 @@
                                 <button type="button" class="btn btn-sm grey" onclick="do_reset();">重置</button>
                             </div>
                         </div>
-                        <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light">
                                 <thead>
                                     <tr class="uppercase">
                                         <th> # </th>
@@ -75,7 +75,7 @@
                                                     @if($apply->status > 0 && $apply->status < 2)
                                                         <button type="button" class="btn btn-sm red btn-outline" onclick="doAudit('{{$apply->id}}')"> 审核 </button>
                                                     @else
-                                                        <button type="button" class="btn btn-sm blue btn-outline" onclick="doAudit('{{$apply->id}}')"> 查看 </button>
+                                                        <button type="button" class="btn btn-sm blue btn-outline" onclick="doAudit('{{$apply->id}}')"> <i class="fa fa-search"></i> </button>
                                                     @endif
                                                 </td>
                                             </tr>

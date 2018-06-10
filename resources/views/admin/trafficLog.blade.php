@@ -34,8 +34,8 @@
                                 <button type="button" class="btn btn-sm grey" onclick="do_reset();">重置</button>
                             </div>
                         </div>
-                        <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light">
                                 <thead>
                                 <tr>
                                     <th> # </th>
@@ -51,7 +51,7 @@
                                 <tbody>
                                     @if($trafficLogList->isEmpty())
                                         <tr>
-                                            <td colspan="8">暂无数据</td>
+                                            <td colspan="8" style="text-align: center;">暂无数据</td>
                                         </tr>
                                     @else
                                         @foreach($trafficLogList as $trafficLog)

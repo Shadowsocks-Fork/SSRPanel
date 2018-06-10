@@ -37,6 +37,35 @@
 <!-- END LOGO -->
 <!-- BEGIN LOGIN -->
 <div class="content">
+    <nav style="padding-bottom: 20px;text-align: center;">
+        @if(app()->getLocale() == 'zh-CN')
+            <a href="{{url('lang', ['locale' => 'zh-tw'])}}">繁體中文</a>
+            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
+            <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
+            <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
+        @elseif(app()->getLocale() == 'zh-tw')
+            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">简体中文</a>
+            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
+            <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
+            <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
+        @elseif(app()->getLocale() == 'en')
+            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">简体中文</a>
+            <a href="{{url('lang', ['locale' => 'zh-tw'])}}">繁體中文</a>
+            <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
+            <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
+        @elseif(app()->getLocale() == 'ko')
+            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">简体中文</a>
+            <a href="{{url('lang', ['locale' => 'zh-tw'])}}">繁體中文</a>
+            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
+            <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
+        @elseif(app()->getLocale() == 'ja')
+            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">简体中文</a>
+            <a href="{{url('lang', ['locale' => 'zh-tw'])}}">繁體中文</a>
+            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
+            <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
+        @else
+        @endif
+    </nav>
     <!-- BEGIN REGISTRATION FORM -->
     <form class="register-form" action="{{url('register')}}" method="post" style="display: block;">
         @if($is_register)
@@ -51,7 +80,7 @@
                 <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="{{trans('register.username_placeholder')}}" name="username" value="{{Request::old('username')}}" required />
                 <input type="hidden" name="register_token" value="{{Session::get('register_token')}}" />
                 <input type="hidden" name="_token" value="{{csrf_token()}}" />
-                <input type="hidden" name="aff" value="{{Request::get('aff')}}" />
+                <input type="hidden" name="aff" value="{{Session::get('register_aff')}}" />
             </div>
             <div class="form-group">
                 <label class="control-label visible-ie8 visible-ie9">{{trans('register.password')}}</label>
@@ -66,7 +95,7 @@
                     <label class="control-label visible-ie8 visible-ie9">{{trans('register.code')}}</label>
                     <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="{{trans('register.code')}}" name="code" value="{{Request::old('code') ? Request::old('code') : Request::get('code')}}" required />
                 </div>
-                <p class="hint"> <a href="{{url('free')}}" target="_blank">获取免费邀请码</a> </p>
+                <p class="hint"> <a href="{{url('free')}}" target="_blank">{{trans('register.get_free_code')}}</a> </p>
             @endif
             @if($is_captcha)
             <div class="form-group" style="margin-bottom:75px;">
@@ -103,12 +132,10 @@
 <script src="/assets/global/plugins/excanvas.min.js"></script>
 <script src="/assets/global/plugins/ie8.fix.min.js"></script>
 <![endif]-->
-<!-- BEGIN CORE PLUGINS -->
 <script src="/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
 <script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-<!-- END CORE PLUGINS -->
-<!-- BEGIN PAGE LEVEL PLUGINS -->
-<!-- END PAGE LEVEL PLUGINS -->
+<script src="/assets/global/scripts/app.min.js" type="text/javascript"></script>
+<script src="/js/layer/layer.js" type="text/javascript"></script>
 <script type="text/javascript">
     // 登录
     function login() {
@@ -128,7 +155,7 @@
             ,btn: ['{{trans('register.tnc_title')}}']
             ,btnAlign: 'c'
             ,moveType: 1 //拖拽模式，0或者1
-            ,content: '<div style="padding: 20px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">不得通过本站提供的服务发布、转载、传送含有下列内容之一的信息：<br>1.违反宪法确定的基本原则的；<br>2.危害国家安全，泄漏国家机密，颠覆国家政权，破坏国家统一的；<br>3.损害国家荣誉和利益的；<br>4.煽动民族仇恨、民族歧视，破坏民族团结的；<br>5.破坏国家宗教政策，宣扬邪教和封建迷信的； <br>6.散布谣言，扰乱社会秩序，破坏社会稳定的；<br>7.散布淫秽、色情、赌博、暴力、恐怖或者教唆犯罪的；<br>8.侮辱或者诽谤他人，侵害他人合法权益的；<br>9.煽动非法集会、结社、游行、示威、聚众扰乱社会秩序的；<br>10.以非法民间组织名义活动的；<br>11.含有法律、行政法规禁止的其他内容的。</div>'
+            ,content: '<div style="padding: 20px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">{!! trans('register.tnc_content') !!}</div>'
             ,success: function(layero){
 //                var btn = layero.find('.layui-layer-btn');
 //                btn.find('.layui-layer-btn0').attr({
@@ -139,10 +166,10 @@
         });
     }
 </script>
-<!-- BEGIN THEME GLOBAL SCRIPTS -->
-<script src="/assets/global/scripts/app.min.js" type="text/javascript"></script>
-<script src="/js/layer/layer.js" type="text/javascript"></script>
-<!-- END THEME GLOBAL SCRIPTS -->
+<!-- 统计 -->
+{!! $website_analytics !!}
+<!-- 客服 -->
+{!! $website_customer_service !!}
 </body>
 
 </html>

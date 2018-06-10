@@ -18,17 +18,14 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="portlet light bordered">
-                    <div class="portlet-title">
-                        <div class="caption font-dark">
-                            <span class="caption-subject bold"> {{trans('home.service_title')}} </span>
-                        </div>
-                    </div>
                     <div class="portlet-body">
-                        <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light table-checkable order-column">
                                 <thead>
                                 <tr>
-                                    <th> {{trans('home.service_name')}} </th>
+                                    <th style="width:35%;"> {{trans('home.service_name')}} </th>
+                                    <th style="text-align: center;"> {{trans('home.service_desc')}} </th>
+                                    <th style="text-align: center;"> {{trans('home.service_type')}} </th>
                                     <th style="text-align: center;"> {{trans('home.service_price')}} </th>
                                     <th> </th>
                                 </tr>
@@ -36,22 +33,24 @@
                                 <tbody>
                                 @if($goodsList->isEmpty())
                                     <tr>
-                                        <td colspan="3">{{trans('home.services_none')}}</td>
+                                        <td colspan="5" style="text-align: center;">{{trans('home.services_none')}}</td>
                                     </tr>
                                 @else
                                     @foreach($goodsList as $key => $goods)
                                         <tr class="odd gradeX">
-                                            <td>
+                                            <td style="width: 20%;">
                                                 <!--@if($goods->logo) <a href="{{$goods->logo}}" class="fancybox"><img src="{{$goods->logo}}"/></a> @endif -->
-                                                <strong><span style="color:#dc9700">{{$goods->name}}</span></strong>
+                                                <span style="font-size: 1.15em; color: #000;">{{$goods->name}}</span>
                                                 <br>
-                                                {{trans('home.service_traffic')}}：{{$goods->traffic}}
+                                                <span style="color: #000;">{{trans('home.service_traffic')}}：{{$goods->traffic}}</span>
                                                 <br>
-                                                {{trans('home.service_days')}}：{{$goods->days}} {{trans('home.day')}}
+                                                <span style="color: #000;">{{trans('home.service_days')}}：{{$goods->days}} {{trans('home.day')}}</span>
                                             </td>
-                                            <td style="text-align: center;"> ￥ {{$goods->price}} </td>
-                                            <td style="text-align: center;">
-                                                <button type="button" class="btn btn-sm blue" onclick="buy('{{$goods->id}}')">{{trans('home.service_buy_button')}}</button>
+                                            <td style="width: 20%; text-align: center;"> {{$goods->desc}} </td>
+                                            <td style="width: 20%; text-align: center;"> {{$goods->type == '1' ? trans('home.service_type_1') : trans('home.service_type_2')}} </td>
+                                            <td style="width: 20%; text-align: center;"> ￥{{$goods->price}} </td>
+                                            <td style="width: 20%; text-align: center;">
+                                                <a href="javascript:buy('{{$goods->id}}');" class="btn blue"> {{trans('home.service_buy_button')}} </a>
                                                 <!--<button type="button" class="btn btn-sm blue btn-outline" onclick="exchange('{{$goods->id}}')">兑换</button>-->
                                             </td>
                                         </tr>
@@ -61,10 +60,7 @@
                             </table>
                         </div>
                         <div class="row">
-                            <div class="col-md-4 col-sm-4">
-                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$goodsList->total()}} 个流量包</div>
-                            </div>
-                            <div class="col-md-8 col-sm-8">
+                            <div class="col-md-12">
                                 <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
                                     {{ $goodsList->links() }}
                                 </div>

@@ -39,13 +39,19 @@
                                                     <div class="form-group">
                                                         <label for="server" class="col-md-3 control-label"> 域名地址 </label>
                                                         <div class="col-md-8">
-                                                            <input type="text" class="form-control" name="server" value="{{$node->server}}" id="server" placeholder="服务器域名地址，填写则优先取域名地址">
+                                                            <input type="text" class="form-control" name="server" value="{{$node->server}}" id="server" placeholder="服务器域名地址，填则优先取域名地址">
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="ip" class="col-md-3 control-label"> IP地址 </label>
+                                                        <label for="ip" class="col-md-3 control-label"> IPV4地址 </label>
                                                         <div class="col-md-8">
-                                                            <input type="text" class="form-control" name="ip" value="{{$node->ip}}" id="ip" placeholder="服务器IP地址" required>
+                                                            <input type="text" class="form-control" name="ip" value="{{$node->ip}}" id="ip" placeholder="服务器IPV4地址" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="ipv6" class="col-md-3 control-label"> IPV6地址 </label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control" name="ipv6" value="{{$node->ipv6}}" id="ipv6" placeholder="服务器IPV6地址，填写则用户可见，域名无效">
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -69,7 +75,7 @@
                                                                     @endforeach
                                                                 @endif
                                                             </select>
-                                                            <span class="help-block">没有关联任何分组时则节点不可见</span>
+                                                            <span class="help-block">订阅时分组展示</span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -193,6 +199,21 @@
                                                 </div>
                                                 <div class="portlet-body">
                                                     <div class="form-group">
+                                                        <label for="is_subscribe" class="col-md-3 control-label">订阅</label>
+                                                        <div class="col-md-8">
+                                                            <div class="mt-radio-inline">
+                                                                <label class="mt-radio">
+                                                                    <input type="radio" name="is_subscribe" value="1" {{$node->is_subscribe ? 'checked' : ''}}> 允许
+                                                                    <span></span>
+                                                                </label>
+                                                                <label class="mt-radio">
+                                                                    <input type="radio" name="is_subscribe" value="0" {{!$node->is_subscribe ? 'checked' : ''}}> 不允许
+                                                                    <span></span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
                                                         <label for="compatible" class="col-md-3 control-label">兼容SS</label>
                                                         <div class="col-md-8">
                                                             <select class="form-control" name="compatible" id="compatible">
@@ -272,7 +293,7 @@
                                                     <div class="form-group">
                                                         <label for="monitor_url" class="col-md-3 control-label">监控地址</label>
                                                         <div class="col-md-8">
-                                                            <input type="text" class="form-control right" name="monitor_url" value="{{$node->monitor_url}}" id="monitor_url" placeholder="">
+                                                            <input type="text" class="form-control right" name="monitor_url" value="{{$node->monitor_url}}" id="monitor_url" placeholder="节点实时监控地址">
                                                             <span class="help-block"> 例如：http://us1.xxx.com/monitor.php </span>
                                                         </div>
                                                     </div>
@@ -321,6 +342,7 @@
             var country_code = $("#country_code option:selected").val();
             var server = $('#server').val();
             var ip = $('#ip').val();
+            var ipv6 = $('#ipv6').val();
             var desc = $('#desc').val();
             var method = $('#method').val();
             var traffic_rate = $('#traffic_rate').val();
@@ -331,6 +353,7 @@
             var bandwidth = $('#bandwidth').val();
             var traffic = $('#traffic').val();
             var monitor_url = $('#monitor_url').val();
+            var is_subscribe = $("input:radio[name='is_subscribe']:checked").val();
             var compatible = $('#compatible').val();
             var single = $('#single').val();
             var single_force = $('#single_force').val();
@@ -346,7 +369,7 @@
                 type: "POST",
                 url: "{{url('admin/editNode')}}",
                 async: false,
-                data: {_token:_token, id:id, name: name, labels:labels, group_id:group_id, country_code:country_code, server:server, ip:ip, desc:desc, method:method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, compatible:compatible, single:single, single_force:single_force, single_port:single_port, single_passwd:single_passwd, single_method:single_method, single_protocol:single_protocol, single_obfs:single_obfs, sort:sort, status:status},
+                data: {_token:_token, id:id, name: name, labels:labels, group_id:group_id, country_code:country_code, server:server, ip:ip, ipv6:ipv6, desc:desc, method:method, traffic_rate:traffic_rate, protocol:protocol, protocol_param:protocol_param, obfs:obfs, obfs_param:obfs_param, bandwidth:bandwidth, traffic:traffic, monitor_url:monitor_url, is_subscribe:is_subscribe, compatible:compatible, single:single, single_force:single_force, single_port:single_port, single_passwd:single_passwd, single_method:single_method, single_protocol:single_protocol, single_obfs:single_obfs, sort:sort, status:status},
                 dataType: 'json',
                 success: function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {
@@ -374,9 +397,9 @@
 
         // 服务条款
         function showTnc() {
-            var content = '1、请勿直接复制黏贴以下配置，SSR(R)会报错的；'
-                + '<br>2、确保服务器时间为CST或UTC；'
-                + '<br>3、请看<a href="https://github.com/ssrpanel/SSRPanel/wiki/%E5%8D%95%E7%AB%AF%E5%8F%A3%E5%A4%9A%E7%94%A8%E6%88%B7%E7%9A%84%E5%9D%91" target="_blank">WIKI</a>；'
+            var content = '1.请勿直接复制黏贴以下配置，SSR(R)会报错的；'
+                + '<br>2.确保服务器时间为CST；'
+                + '<br>3.具体请看<a href="https://github.com/ssrpanel/SSRPanel/wiki/%E5%8D%95%E7%AB%AF%E5%8F%A3%E5%A4%9A%E7%94%A8%E6%88%B7%E7%9A%84%E5%9D%91" target="_blank">WIKI</a>；'
                 + '<br>'
                 + '<br>"additional_ports" : {'
                 + '<br>&ensp;&ensp;&ensp;&ensp;"80": {'
